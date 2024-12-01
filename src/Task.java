@@ -13,7 +13,6 @@ public abstract class Task {
         this.completed = false;  
     }
 
-    // Getter methods
     public String getTitle() {
         return title;
     }
@@ -37,6 +36,5 @@ public abstract class Task {
     public long calculateDaysLeft() {
         return java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
     }
-    
     public abstract void displayInfo();
 }

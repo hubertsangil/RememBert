@@ -10,7 +10,6 @@ public class TaskManager {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/task_tracker", "root", "XCD_REMEMBERT");
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -136,14 +135,12 @@ public class TaskManager {
         return tasks;
     }
     
-    public void markTaskAsCompleted(String title) {
-        try {
-            String query = "UPDATE tasks SET is_completed = true WHERE title = ? AND user_id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, title);
-            preparedStatement.setInt(2, currentUserId);
-            int rowsUpdated = preparedStatement.executeUpdate();
-        
+    public void markTaskAsCompleted(int taskId, int userId) {
+        String query = "UPDATE tasks SET is_completed = TRUE WHERE id = ? AND user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, taskId);
+            stmt.setInt(2, userId);
+            int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Task marked as completed.");
             } else {
@@ -155,26 +152,37 @@ public class TaskManager {
     }
     
     public void displayAllTasks(int userId) {
-        List<Task> tasks = getTasksByUser(userId);
+        String query = "SELECT id, title, due_date, is_completed FROM tasks WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
     
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks available.");
-        } else {
-
-            System.out.printf("%-20s %-15s %-12s %-10s%n", "Title", "Due Date", "Status", "Type");
-            System.out.println("----------------------------------------------------------------");
-    
-
-            for (Task task : tasks) {
-                String status = task.isCompleted() ? "Completed" : "Pending";
-                System.out.printf("%-20s %-15s %-12s %-10s%n",
-                        task.getTitle(), task.getDueDate(), status, task.getClass().getSimpleName());
+            if (!rs.isBeforeFirst()) { 
+                System.out.println("No tasks found.");
+                return;
             }
+    
+            System.out.println("+----+-----------------------------------+------------+-----------+");
+            System.out.printf("| %-2s | %-33s | %-10s | %-9s |%n", "ID", "Title", "Due Date", "Status");
+            System.out.println("+----+-----------------------------------+------------+-----------+");
+    
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                LocalDate dueDate = rs.getDate("due_date").toLocalDate();
+                boolean completed = rs.getBoolean("is_completed");
+    
+                System.out.printf("| %-2d | %-33s | %-10s | %-9s |%n",
+                                  id, title, dueDate, completed ? "Completed" : "Pending");
+            }
+    
+            System.out.println("+----+-----------------------------------+------------+-----------+");
+        } catch (SQLException e) {
+            System.out.println("An error occurred while retrieving tasks.");
+            e.printStackTrace();
         }
     }
     
-    
-
     public void showTaskStats() {
         try {
             String query = "SELECT COUNT(*) AS total, SUM(is_completed) AS is_completed FROM tasks";

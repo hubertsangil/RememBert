@@ -8,6 +8,7 @@ public class RememBert_DB {
     static final String USER = "root";
     static final String PASS = "XCD_REMEMBERT";
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void main(String[] args) {
         try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         Statement stmt = conn.createStatement();)
