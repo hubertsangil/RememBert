@@ -1,8 +1,8 @@
 import java.time.LocalDate;
 
 public class ActivityTask extends Task {
-    public ActivityTask(String title, LocalDate dueDate) {
-        super(title, dueDate);
+    public ActivityTask(String title, LocalDate dueDate, int userId) {
+        super(title, dueDate, userId);
     }
 
     @Override

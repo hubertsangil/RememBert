@@ -1,17 +1,19 @@
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public abstract class Task {
     private String title;
     private LocalDate dueDate;
-    private boolean isCompleted;
+    private int userId;  
+    private boolean completed;
 
-    public Task(String title, LocalDate dueDate) {
+    public Task(String title, LocalDate dueDate, int userId) {
         this.title = title;
         this.dueDate = dueDate;
-        this.isCompleted = false;
+        this.userId = userId;  
+        this.completed = false;  
     }
 
+    // Getter methods
     public String getTitle() {
         return title;
     }
@@ -20,17 +22,21 @@ public abstract class Task {
         return dueDate;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
     public boolean isCompleted() {
-        return isCompleted;
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        isCompleted = completed;
+        this.completed = completed;
     }
 
     public long calculateDaysLeft() {
-        return LocalDate.now().until(dueDate, ChronoUnit.DAYS);
+        return java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
     }
-
+    
     public abstract void displayInfo();
 }

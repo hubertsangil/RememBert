@@ -13,7 +13,45 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new TaskManager();
         Scanner scanner = new Scanner(System.in);
-        boolean running = true;
+        boolean authenticated = false;
+
+        while (!authenticated) {
+            System.out.println("Welcome to Task Tracker");
+            System.out.println("\n1. Register");
+            System.out.println("2. Login");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter username: ");
+                    String regUsername = scanner.nextLine();
+                    System.out.print("Enter password: ");
+                    String regPassword = scanner.nextLine();
+                    taskManager.registerUser(regUsername, regPassword);
+                    break;
+
+                case 2:
+                    System.out.print("Enter username: ");
+                    String loginUsername = scanner.nextLine();
+                    System.out.print("Enter password: ");
+                    String loginPassword = scanner.nextLine();
+
+
+                    if (taskManager.loginUser(loginUsername, loginPassword)) {
+                        authenticated = true;
+                        taskManager.setCurrentUserId(taskManager.getUserId(loginUsername));
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        // Main menu after authentication
+        System.out.println("\nAccess granted. Welcome!");
 
         while (true) {
             clearConsole();
@@ -42,25 +80,26 @@ public class Main {
                             String quizTitle = scanner.nextLine();
                             System.out.print("Enter Due Date (YYYY-MM-DD): ");
                             LocalDate quizDueDate = LocalDate.parse(scanner.nextLine());
-                            taskManager.addTask(new QuizTask(quizTitle, quizDueDate));
+                            taskManager.addTask(new QuizTask(quizTitle, quizDueDate, taskManager.getCurrentUserId()));  // Pass currentUserId
                             break;
-                        
+
                         case 2:
                             clearConsole();
                             System.out.print("Enter Activity Title: ");
                             String activityTitle = scanner.nextLine();
                             System.out.print("Enter Due Date (YYYY-MM-DD): ");
                             LocalDate activityDueDate = LocalDate.parse(scanner.nextLine());
-                            taskManager.addTask(new ActivityTask(activityTitle, activityDueDate));
+                            taskManager.addTask(new ActivityTask(activityTitle, activityDueDate, taskManager.getCurrentUserId()));  // Pass currentUserId
                             break;
+
                         default:
                             System.out.println("Invalid input, please try again.");
                     }
                     break;
 
-                case 2: 
+                    case 2: 
                     clearConsole();
-                    taskManager.displayAllTasks();
+                    taskManager.displayAllTasks(taskManager.getCurrentUserId());
                     break;
 
                 case 3:
@@ -70,13 +109,9 @@ public class Main {
 
                 case 4:
                     clearConsole();
-                    if (taskManager.getTasks().isEmpty()) {
-                        System.out.println("No tasks available to mark as completed.");
-                    } else {
-                        System.out.print("Enter Task Title to mark as completed: ");
-                        String title = scanner.nextLine();
-                        taskManager.markTaskAsCompleted(title);
-                    }
+                    System.out.print("Enter Task Title to mark as completed: ");
+                    String title = scanner.nextLine();
+                    taskManager.markTaskAsCompleted(title); 
                     break;
 
                 case 0:
@@ -90,33 +125,10 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-            if (running) {
-                System.out.println("\nPress Enter to continue...");
-                scanner.nextLine(); 
-        
-                clearConsole();
-            }
-        }
-        
-    }
 
-    public static void markTaskAsCompleted(TaskManager taskManager, String title) {
-        if (taskManager.getTasks().isEmpty()) {
-            System.out.println("No tasks available to mark as completed.");
-            return; 
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
+            clearConsole();
         }
-    
-        for (Task task : taskManager.getTasks())  {
-            if (task.getTitle().equalsIgnoreCase(title)) {
-                task.setCompleted(true);
-                System.out.println("Task marked as completed.");
-                return;
-            }
-        }
-    
-        System.out.println("Task not found.");
     }
 }
-
-
-

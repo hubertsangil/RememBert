@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class RememBert_DB {
-    static final String DB_URL = "jdbc:mysql://localhost:3306/";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/task_tracker";
     static final String USER = "root";
     static final String PASS = "XCD_REMEMBERT";
 
