@@ -11,6 +11,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        RememBert_DB.initializeDatabase();
         TaskManager taskManager = new TaskManager();
         Scanner scanner = new Scanner(System.in);
 
@@ -82,6 +83,8 @@ public class Main {
                         clearConsole();
                         System.out.println("\n1. Add a Quiz Task");
                         System.out.println("2. Add an Activity Task");
+                        System.out.println();
+                        System.out.println("Choose an option: ");
                         int nextOption = scanner.nextInt();
                         scanner.nextLine();
         
@@ -116,11 +119,13 @@ public class Main {
         
                     case 3: 
                         clearConsole();
-                        taskManager.showTaskStats();
+                        taskManager.showTaskStats(taskManager.getCurrentUserId());
                         break;
         
                     case 4: 
                         clearConsole();
+                        taskManager.displayAllTasks(taskManager.getCurrentUserId());
+                        System.out.println();
                         System.out.print("Enter Task ID to mark as completed: ");
                         int taskId = scanner.nextInt();
                         scanner.nextLine();

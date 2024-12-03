@@ -136,20 +136,43 @@ public class TaskManager {
     }
     
     public void markTaskAsCompleted(int taskId, int userId) {
-        String query = "UPDATE tasks SET is_completed = TRUE WHERE id = ? AND user_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, taskId);
-            stmt.setInt(2, userId);
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Task marked as completed.");
+        String checkQuery = "SELECT is_completed FROM tasks WHERE id = ? AND user_id = ?";
+        String updateQuery = "UPDATE tasks SET is_completed = TRUE WHERE id = ? AND user_id = ?";
+    
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+
+            checkStmt.setInt(1, taskId);
+            checkStmt.setInt(2, userId);
+            ResultSet rs = checkStmt.executeQuery();
+    
+            if (rs.next()) {
+                boolean isCompleted = rs.getBoolean("is_completed");
+    
+                if (isCompleted) {
+                    System.out.println("Task is already marked as completed.");
+                    return;
+                }
+    
+                try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+                    updateStmt.setInt(1, taskId);
+                    updateStmt.setInt(2, userId);
+                    int rowsUpdated = updateStmt.executeUpdate();
+    
+                    if (rowsUpdated > 0) {
+                        System.out.println("Task marked as completed.");
+                    } else {
+                        System.out.println("Task not found or does not belong to you.");
+                    }
+                }
             } else {
                 System.out.println("Task not found or does not belong to you.");
             }
         } catch (SQLException e) {
+            System.out.println("An error occurred while marking the task as completed.");
             e.printStackTrace();
         }
     }
+    
     
     public void displayAllTasks(int userId) {
         String query = "SELECT id, title, due_date, is_completed FROM tasks WHERE user_id = ?";
@@ -183,25 +206,28 @@ public class TaskManager {
         }
     }
     
-    public void showTaskStats() {
-        try {
-            String query = "SELECT COUNT(*) AS total, SUM(is_completed) AS is_completed FROM tasks";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-
+    public void showTaskStats(int userId) {
+        String query = "SELECT COUNT(*) AS total, SUM(is_completed) AS completed " +
+                       "FROM tasks WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet resultSet = stmt.executeQuery();
+    
             if (resultSet.next()) {
                 int total = resultSet.getInt("total");
-                int completed = resultSet.getInt("is_completed");
+                int completed = resultSet.getInt("completed");
                 int pending = total - completed;
-
+    
                 System.out.println("Total Tasks: " + total);
                 System.out.println("Completed Tasks: " + completed);
                 System.out.println("Pending Tasks: " + pending);
             }
         } catch (SQLException e) {
+            System.out.println("An error occurred while fetching task statistics.");
             e.printStackTrace();
         }
     }
+    
 
     public int getUserId(String username) {
         try {
