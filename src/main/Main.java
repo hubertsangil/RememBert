@@ -1,5 +1,12 @@
+package main;
+
 import java.time.LocalDate;
 import java.util.Scanner;
+
+import database.RememBert_DB;
+import managers.TaskManager;
+import models.ActivityTask;
+import models.QuizTask;
 
 public class Main {
     public static void clearConsole() {

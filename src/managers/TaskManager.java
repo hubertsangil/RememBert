@@ -1,7 +1,11 @@
+package managers;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import models.ActivityTask;
+import models.QuizTask;
+import models.Task;
 
 public class TaskManager {
     private Connection connection;
