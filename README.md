@@ -1,3 +1,5 @@
+![remembert_banner](https://github.com/hubertsangil/RememBert/blob/main/images/remembert_banner.png)
+
 # RememBert: Task Tracker 📋  
 
 Your personal buddy for keeping track of tasks. Never forget, just **RememBert**.
