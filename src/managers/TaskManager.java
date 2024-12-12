@@ -208,9 +208,9 @@ public class TaskManager {
                 return;
             }
     
-            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
-            System.out.printf("| %-3s | %-33s | %-10s | %-9s | %-10s | %-14s |%n", " ", "Title", "Due Date", "Status", "Days Left", "Type");
-            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
+            System.out.println("+-----+-----+-----------------------------------+------------+-----------+------------+----------------+");
+            System.out.printf("| %-3s | %-3s | %-33s | %-10s | %-9s | %-10s | %-14s |%n", " ", "ID", "Title", "Due Date", "Status", "Days Left", "Type");
+            System.out.println("+-----+-----+-----------------------------------+------------+-----------+------------+----------------+");
     
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -218,6 +218,8 @@ public class TaskManager {
                 LocalDate dueDate = rs.getDate("due_date").toLocalDate();
                 boolean completed = rs.getBoolean("is_completed");
                 String taskType = rs.getString("type");
+                taskType = taskType.length() > 4 ? taskType.substring(0, taskType.length() - 4) : taskType;
+    
                 String daysLeft;
                 if (completed) {
                     daysLeft = "Completed";
@@ -226,16 +228,16 @@ public class TaskManager {
                     long daysLeftValue = ChronoUnit.DAYS.between(currentDate, dueDate);
                     daysLeft = daysLeftValue >= 0 ? daysLeftValue + " days" : "Overdue";
                 }
-
-                String checkBox = completed ? "[/]" : "[ ]"; 
-
-                System.out.printf("| %-3s | %-33s | %-10s | %-9s | %-10s | %-14s |%n",
-                                  checkBox, title, dueDate, 
+    
+                String checkBox = completed ? "[/]" : "[ ]";
+    
+                System.out.printf("| %-3s | %-3d | %-33s | %-10s | %-9s | %-10s | %-14s |%n",
+                                  checkBox, id, title, dueDate, 
                                   completed ? "Completed" : "Pending",
                                   daysLeft, taskType);
             }
 
-            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
+            System.out.println("+-----+-----+-----------------------------------+------------+-----------+------------+----------------+");
     
         } catch (SQLException e) {
             System.out.println("An error occurred while retrieving tasks.");

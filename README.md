@@ -4,12 +4,14 @@
 
 Your personal buddy for keeping track of tasks. Never forget, just **RememBert**.
 
----
-## Patch Notes
-- Revised README.md
-- `Quiz`, `Activity` initial task types, will add more later.
 
----
+## Patch Notes
+- Added `removeTask` method.
+- Updated `displayAllTasks` method.
+- Added progress bar on `showTaskStats` method.
+- Revised `README`.
+
+
 ## Table of Contents
 - [Patch Notes](#patch-notes)
 - [Overview](#overview)
@@ -26,7 +28,7 @@ Your personal buddy for keeping track of tasks. Never forget, just **RememBert**
 
 
 
----
+
 
 ## Overview  
 
@@ -51,7 +53,7 @@ This project addresses **SDG #4** by encouraging students to stay organized, man
 
 
 
----
+
 
 ## OOP Principles Applied  
 
@@ -68,7 +70,7 @@ This project addresses **SDG #4** by encouraging students to stay organized, man
 - The `displayInfo()` method is overridden in each subclass, providing tailored behavior depending on the type of task. For example:
   - A `QuizTask` might display details relevant to quizzes, while an `ActivityTask` shows details related to activities.  
 
----
+
 ## Program Details
 
 ### Installation and Running Instructions  
@@ -93,46 +95,56 @@ This project addresses **SDG #4** by encouraging students to stay organized, man
     ```bash
     java -cp bin Main
 
----
+
 
 ### File Structure
 
         task-tracker/
     ├── src/
     │ ├── database/
-    │ │ ├── RememBert_DB.java # Contains database information and functions
+    │ │ └── RememBert_DB.java # Contains database information and functions
     │ ├── main/
-    │ │ ├── Main.java # Main program file
+    │ │ └── Main.java # Main program file (entry-point)
     │ ├── managers/
-    │ │ ├── TaskManager.java # Handles task operations
+    │ │ └── TaskManager.java # Handles task operations
+    │ ├── menus/
+    │ │ ├── LoginMenu.java # Login menu
+    │ │ └── MainMenu.java # Main menu
     │ ├── models/
-    │ ├── Task.java # Abstract class for tasks
-    │ ├── QuizTask.java # Represents a quiz task
-    │ ├── ActivityTask.java # Represents an activity task
+    │ │ ├── Task.java # Abstract class for tasks
+    │ │ ├──  QuizTask.java # Represents a quiz task
+    │ │ └──  ActivityTask.java # Represents an activity task
+    │ └── utils/
+    │   └── ConsoleUtils.java # Contains utility methods
     ├── bin/ # Compiled .class files (auto-generated)
     └── README.md # Documentation
 
----
+
 
 ### Features  
-- Add and display tasks.
+- Register and log in to user accounts.
+- Add, remove, and display tasks.
 - Categorize tasks as **Quiz** or **Activity**. 
 - Track deadlines and view the number of days remaining.  
 - Mark tasks as completed.  
-- View task statistics (total, completed, pending).  
+- View task statistics (total, completed, pending). 
 
----
+
+
 
 ### Classes
 
 | Class Name       | Description                                                                 |
 |-------------------|-----------------------------------------------------------------------------|
-| `Main`           | Contains the main method and handles user input, menu navigation, and program logic. |
-| `TaskManager`    | Manages the collection of tasks, including adding, displaying, and tracking task statuses. |
-| `Task`           | Abstract base class representing a generic task with attributes like title, due date, and completion status. |
-| `QuizTask`       | Subclass of `Task` for tasks categorized as quizzes. Adds specific behavior for quizzes. |
-| `ActivityTask`   | Subclass of `Task` for tasks categorized as activities. Adds specific behavior for activities. |
-| `RememBert_DB`   | Contains MySQL query syntax needed for database initialization. |
+|  **Main**            | Program entry point. |
+| **TaskManager**    | Manages the collection of tasks, including adding, displaying, and tracking task statuses. |
+| **Task**           | Abstract base class representing a generic task with attributes like title, due date, and completion status. |
+| **QuizTask**      | Subclass of `Task` for tasks categorized as quizzes. Adds specific behavior for quizzes. |
+| **ActivityTask**   | Subclass of `Task` for tasks categorized as activities. Adds specific behavior for activities. |
+| **RememBert_DB**   | Contains MySQL query syntax needed for database initialization. |
+| **ConsoleUtils** | Contains utility methods such as `clearConsole`. |
+| **LoginMenu** | The login menu for the program, contains register, login, and exit options. |
+| **MainMenu** | The main menu for the program, contains the options for adding, displaying, removing, marking tasks as complete, and log-out. |
 
 
 
