@@ -1,6 +1,7 @@
 package managers;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import models.ActivityTask;
@@ -176,10 +177,28 @@ public class TaskManager {
             e.printStackTrace();
         }
     }
+
+    public void removeTask(int taskId, int userId) {
+        String query = "DELETE FROM tasks WHERE id = ? AND user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, taskId);
+            stmt.setInt(2, userId);
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("Task removed successfully.");
+            } else {
+                System.out.println("Task not found or does not belong to you.");
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occurred while removing the task.");
+            e.printStackTrace();
+        }
+    }
     
     
     public void displayAllTasks(int userId) {
-        String query = "SELECT id, title, due_date, is_completed FROM tasks WHERE user_id = ?";
+        String query = "SELECT id, title, due_date, is_completed, type FROM tasks WHERE user_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -189,21 +208,35 @@ public class TaskManager {
                 return;
             }
     
-            System.out.println("+----+-----------------------------------+------------+-----------+");
-            System.out.printf("| %-2s | %-33s | %-10s | %-9s |%n", "ID", "Title", "Due Date", "Status");
-            System.out.println("+----+-----------------------------------+------------+-----------+");
+            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
+            System.out.printf("| %-3s | %-33s | %-10s | %-9s | %-10s | %-14s |%n", " ", "Title", "Due Date", "Status", "Days Left", "Type");
+            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
     
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 LocalDate dueDate = rs.getDate("due_date").toLocalDate();
                 boolean completed = rs.getBoolean("is_completed");
-    
-                System.out.printf("| %-2d | %-33s | %-10s | %-9s |%n",
-                                  id, title, dueDate, completed ? "Completed" : "Pending");
+                String taskType = rs.getString("type");
+                String daysLeft;
+                if (completed) {
+                    daysLeft = "Completed";
+                } else {
+                    LocalDate currentDate = LocalDate.now();
+                    long daysLeftValue = ChronoUnit.DAYS.between(currentDate, dueDate);
+                    daysLeft = daysLeftValue >= 0 ? daysLeftValue + " days" : "Overdue";
+                }
+
+                String checkBox = completed ? "[/]" : "[ ]"; 
+
+                System.out.printf("| %-3s | %-33s | %-10s | %-9s | %-10s | %-14s |%n",
+                                  checkBox, title, dueDate, 
+                                  completed ? "Completed" : "Pending",
+                                  daysLeft, taskType);
             }
+
+            System.out.println("+-----+-----------------------------------+------------+-----------+------------+----------------+");
     
-            System.out.println("+----+-----------------------------------+------------+-----------+");
         } catch (SQLException e) {
             System.out.println("An error occurred while retrieving tasks.");
             e.printStackTrace();
@@ -221,10 +254,14 @@ public class TaskManager {
                 int total = resultSet.getInt("total");
                 int completed = resultSet.getInt("completed");
                 int pending = total - completed;
-    
+                double progress = total == 0 ? 0 : (double) completed / total * 100;
+                
                 System.out.println("Total Tasks: " + total);
                 System.out.println("Completed Tasks: " + completed);
                 System.out.println("Pending Tasks: " + pending);
+                System.out.println();
+                System.out.printf("Progress: [%-50s] %.2f%%\n", 
+                                  "■".repeat((int) (progress / 2)), progress);
             }
         } catch (SQLException e) {
             System.out.println("An error occurred while fetching task statistics.");
@@ -247,5 +284,21 @@ public class TaskManager {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public String getUsernameById(int userId) {
+        try {
+            String query = "SELECT username FROM users WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+    
+            if (resultSet.next()) {
+                return resultSet.getString("username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
