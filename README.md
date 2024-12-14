@@ -49,7 +49,12 @@ This project addresses **SDG #4** by encouraging students to stay organized, man
 **Key Contributions:**  
 - Improves time management skills.  
 - Fosters productivity and reduces academic stress.  
-- Provides an easy-to-use digital platform for task tracking.  
+- Provides an easy-to-use digital platform for task tracking. 
+
+### SDG #8: Decent Work and Economic Growth 
+RememBert promotes productivity by allowing individuals to keep track of their tasks contributing to a better work performance.
+
+ 
 
 
 
@@ -77,23 +82,26 @@ This project addresses **SDG #4** by encouraging students to stay organized, man
 
 ### Prerequisites  
 - **Java Development Kit (JDK)** installed on your machine.  
+- **MySQL** installed in your machine. As well as the appropriate **MySQL Connector**.
+- **Any IDE or Code Editor** to manipulate code.
 
 ### Steps  
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/hubertsangil/RememBert.git
+1.  **Download** the folder from this repository.
+2.  **Extract** the folder from the **zip file**.
+3.  **Open** the folder in your **Code Editor** or **IDE**.
+4.  **Check** if the **file structure** is correct.
+5.  **Change** the **JDBC Credentials** to your **MySQL Credentials**.
+
+```java 
+public class RememBert_DB {
+    static final String DB_URL = "jdbc:mysql://localhost:3306/";
+    static final String DB_NAME = "task_tracker";
+    static final String USER = "root";
+    static final String PASS = "XCD_REMEMBERT"; 
+
+```
+
    
-2. Navigate to the project directory:
-    ```bash
-    cd RememBert
-
-3. Compile the Java files:
-    ```bash
-    javac -d bin src/**/*.java
-
-4. Run the program:
-    ```bash
-    java -cp bin Main
 
 
 
