@@ -1,4 +1,4 @@
-package database;
+package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,16 +11,16 @@ public class RememBert_DB {
     static final String PASS = "XCD_REMEMBERT";
 
     public static void initializeDatabase() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); // replace with MySQL credentials
              Statement stmt = conn.createStatement()) {
              
-            String createDBQuery = "CREATE DATABASE IF NOT EXISTS " + DB_NAME;
+            String createDBQuery = "CREATE DATABASE IF NOT EXISTS " + "task_tracker";
             stmt.executeUpdate(createDBQuery);
             System.out.println("Database ensured.");
 
-            String useDBQuery = "USE " + DB_NAME;
+            String useDBQuery = "USE " + "task_tracker";
             stmt.executeUpdate(useDBQuery);
-            System.out.println("Using database: " + DB_NAME);
+            System.out.println("Using database: " + "task_tracker");
 
             String createUsersTable = """
                 CREATE TABLE IF NOT EXISTS users (

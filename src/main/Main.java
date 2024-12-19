@@ -1,6 +1,6 @@
 package main;
 
-import database.RememBert_DB;
+import db.RememBert_DB;
 import java.util.Scanner;
 import managers.TaskManager;
 import menus.LoginMenu;
