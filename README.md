@@ -6,10 +6,9 @@ Your personal buddy for keeping track of tasks. Never forget, just **RememBert**
 
 
 ## Patch Notes
-- Added `removeTask` method.
-- Updated `displayAllTasks` method.
-- Added progress bar on `showTaskStats` method.
-- Revised `README`.
+- Renamed `database` folder to `db`.
+- Added **DBMS** requirements (init.sql & schema).
+- Added `editTask` method.
 
 
 ## Table of Contents

@@ -38,7 +38,8 @@ public class MainMenu {
             System.out.println("2. Display All Tasks");
             System.out.println("3. Show Task Statistics");
             System.out.println("4. Mark Task as Completed");
-            System.out.println("5. Remove a Task");
+            System.out.println("5. Edit a Task");
+            System.out.println("6. Remove a Task");
             System.out.println("0. Logout");
             System.out.print("\nChoose an option: ");
             int option = scanner.nextInt();
@@ -99,12 +100,27 @@ public class MainMenu {
                 case 5:
                     ConsoleUtils.clearConsole();
                     taskManager.displayAllTasks(taskManager.getCurrentUserId());
+                    System.out.print("\nEnter the Task ID to edit: ");
+                    int editTaskId = scanner.nextInt();
+                    scanner.nextLine();
+                    
+                    System.out.print("Enter the new Task Title: ");
+                    String newTitle = scanner.nextLine();
+                    System.out.print("Enter the new Due Date (YYYY-MM-DD): ");
+                    LocalDate newDueDate = LocalDate.parse(scanner.nextLine());
+                    
+                    taskManager.editTask(editTaskId, taskManager.getCurrentUserId(), newTitle, newDueDate);
+                    break;
+
+                case 6:
+                    ConsoleUtils.clearConsole();
+                    taskManager.displayAllTasks(taskManager.getCurrentUserId());
                     System.out.print("\nEnter the Task ID to remove: ");
                     int removeTaskId = scanner.nextInt();
                     scanner.nextLine();
                     taskManager.removeTask(removeTaskId, taskManager.getCurrentUserId());
                     break;
-                
+
                 case 0:
                     ConsoleUtils.clearConsole();
                     System.out.println("Logging out...");

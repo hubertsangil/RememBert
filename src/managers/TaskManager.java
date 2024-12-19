@@ -303,4 +303,28 @@ public class TaskManager {
         }
         return null;
     }
+
+    public void editTask(int taskId, int userId, String newTitle, LocalDate newDueDate) {
+        String query = "UPDATE tasks SET title = ?, due_date = ? WHERE id = ? AND user_id = ?";
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/task_tracker", "root", "XCD_REMEMBERT");
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setString(1, newTitle);
+            stmt.setDate(2, java.sql.Date.valueOf(newDueDate));
+            stmt.setInt(3, taskId);
+            stmt.setInt(4, userId);
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("Task updated successfully.");
+            } else {
+                System.out.println("Task not found or does not belong to you.");
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occurred while updating the task.");
+            e.printStackTrace();
+        }
+    }
 }
+
+
